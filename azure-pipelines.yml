@@ -50,24 +50,30 @@ steps:
 
       # Get Terraform state files
       if [ "$STATE_FILE_EXISTS" == "false" ]
+      then
         terraform init
       else
-        az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
+        az storage blob download -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
 
         if [ "$STATE_FILE_BACKUP_EXISTS" == "true" ]
-          az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
+        then
+          az storage blob download -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
         fi
       fi
 
-      terraform apply -auto-approve
+      # terraform apply -auto-approve
 
-      # Put new Terraform state files back
+      # Delete old and put new Terraform state files back
       if $(ls | grep terraform.tfstate)
-        az storage blob upload -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
+      then
+        az storage blob delete -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -n terraform.tfstate
+        az storage blob upload -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
       fi
 
       if $(ls | grep terraform.tfstate.backup)
-        az storage blob upload -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
+      then
+        az storage blob delete -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -n terraform.tfstate.backup
+        az storage blob upload -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
       fi
       cd ${BASE_PATH}
     done
