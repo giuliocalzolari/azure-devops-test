@@ -33,7 +33,7 @@ steps:
     ############### VARS ###############
     STORAGE_ACCOUNT_NAME='ikeaterraformstatefiles'
     STORAGE_ACCOUNT_KEY='Xpx4Trp6HmZ+ERwkinrYDhVTzw0smmxwFNsFZYJ3rtNKIqdKHPTDaue0NSZLUsYwyXKibKVB1ltOXwPAOWiY3g=='
-    REPO_PATH='tristanmetcalfe-cloudreach/azure-devops-test/Terraform>'
+    REPO_PATH='tristanmetcalfe-cloudreach/azure-devops-test/Terraform'
     BASE_PATH=$(pwd)
 
     TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY}))
@@ -51,7 +51,7 @@ steps:
       else
         az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
 
-        if [ "$STATE_FILE_BACKUP_EXISTS" == "true" ] 
+        if [ "$STATE_FILE_BACKUP_EXISTS" == "true" ]
           az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
         fi
       fi
