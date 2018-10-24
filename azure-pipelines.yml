@@ -36,10 +36,10 @@ steps:
     REPO_PATH='tristanmetcalfe-cloudreach/azure-devops-test/Terraform'
     BASE_PATH=$(pwd)
 
-    TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY}))
+    TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY} | jq ".[].name" -r))
 
     for CURRENT_TERRAFORM_STACK in "${TERRAFORM_STACKS[@]}" do
-    cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
+      cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
 
       STATE_FILE=$(az storage blob list -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" | jq ". | length")
       STATE_FILE_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate | jq ".exists")
