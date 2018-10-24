@@ -33,7 +33,7 @@ steps:
     ############### VARS ################
     STORAGE_ACCOUNT_NAME='ikeaterraformstatefiles'
     STORAGE_ACCOUNT_KEY='Xpx4Trp6HmZ+ERwkinrYDhVTzw0smmxwFNsFZYJ3rtNKIqdKHPTDaue0NSZLUsYwyXKibKVB1ltOXwPAOWiY3g=='
-    REPO_PATH='azure-devops-test/Terraform'
+    REPO_PATH='Terraform'
     BASE_PATH=$(pwd)
 
     TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY} | jq ".[].name" -r))
