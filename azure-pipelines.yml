@@ -38,7 +38,7 @@ steps:
 
     TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY}))
 
-    for CURRENT_TERRAFORM_STACK in "${arr[@]}" do
+    for CURRENT_TERRAFORM_STACK in "${TERRAFORM_STACKS[@]}" do
       cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
 
       STATE_FILE=$(az storage blob list -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" | jq ". | length")
