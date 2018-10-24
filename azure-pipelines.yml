@@ -30,7 +30,7 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    ############### VARS ###############
+    ############### VARS ################
     STORAGE_ACCOUNT_NAME='ikeaterraformstatefiles'
     STORAGE_ACCOUNT_KEY='Xpx4Trp6HmZ+ERwkinrYDhVTzw0smmxwFNsFZYJ3rtNKIqdKHPTDaue0NSZLUsYwyXKibKVB1ltOXwPAOWiY3g=='
     REPO_PATH='tristanmetcalfe-cloudreach/azure-devops-test/Terraform'
