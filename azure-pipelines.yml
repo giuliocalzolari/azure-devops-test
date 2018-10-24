@@ -38,7 +38,8 @@ steps:
 
     TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY} | jq ".[].name" -r))
 
-    for CURRENT_TERRAFORM_STACK in "${TERRAFORM_STACKS[@]}" do
+    for CURRENT_TERRAFORM_STACK in "${TERRAFORM_STACKS[@]}"
+    do
       echo "REPO_PATH = ${REPO_PATH}"
       echo "CURRENT_TERRAFORM_STACK = ${CURRENT_TERRAFORM_STACK}"
       cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
