@@ -42,11 +42,12 @@ steps:
     do
       echo "REPO_PATH = ${REPO_PATH}"
       echo "CURRENT_TERRAFORM_STACK = '${CURRENT_TERRAFORM_STACK}'"
+      ls
       cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
 
       STATE_FILE=$(az storage blob list -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" | jq ". | length")
-      STATE_FILE_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate | jq ".exists")
-      STATE_FILE_BACKUP_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate.backup | jq ".exists")
+      STATE_FILE_EXISTS=$(az storage blob exists -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate | jq ".exists")
+      STATE_FILE_BACKUP_EXISTS=$(az storage blob exists -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate.backup | jq ".exists")
 
       # Get Terraform state files
       if [ "$STATE_FILE_EXISTS" == "false" ]
