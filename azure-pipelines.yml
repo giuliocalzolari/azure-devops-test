@@ -41,7 +41,7 @@ steps:
     for CURRENT_TERRAFORM_STACK in "${TERRAFORM_STACKS[@]}"
     do
       echo "REPO_PATH = ${REPO_PATH}"
-      echo "CURRENT_TERRAFORM_STACK = ${CURRENT_TERRAFORM_STACK}"
+      echo "CURRENT_TERRAFORM_STACK = '${CURRENT_TERRAFORM_STACK}'"
       cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
 
       STATE_FILE=$(az storage blob list -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" | jq ". | length")
