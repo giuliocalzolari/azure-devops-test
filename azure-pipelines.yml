@@ -29,42 +29,43 @@ steps:
     jq --version
   displayName: 'Install dependencies'
 
-# - script: |
-#     ############### VARS ###############
-#     STORAGE_ACCOUNT_URL_BASE='<INSERT_TERRAFORM_URL HERE>'
-#     STORAGE_ACCOUNT_KEY='<INSERT_TERRAFORM_URL HERE>'
-#     REPO_PATH='<INSERT REPO_PATH HERE - This is not a URL>'
-#     BASE_PATH=$(pwd)
-#
-#     TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key ${STORAGE_ACCOUNT_KEY}))
-#
-#
-#     cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
-#
-#     STATE_FILE=$(az storage blob list -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" | jq ". | length")
-#     STATE_FILE_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate | jq ".exists")
-#     STATE_FILE_BACKUP_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate.backup | jq ".exists")
-#
-#     # Get Terraform state files
-#     if ! STATE_FILE_EXISTS
-#       terraform init
-#     else
-#       az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
-#
-#       if STATE_FILE_BACKUP_EXISTS
-#         az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
-#       fi
-#     fi
-#
-#     terraform apply -auto-approve
-#
-#     # Put new Terraform state files back
-#     if $(ls | grep terraform.tfstate)
-#       az storage blob upload -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
-#     fi
-#
-#     if $(ls | grep terraform.tfstate.backup)
-#       az storage blob upload -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_URL_BASE} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
-#     fi
-#     cd ${BASE_PATH}
-#   displayName: 'Get current Terraform state files, apply changes, put back new state files'
+- script: |
+    ############### VARS ###############
+    STORAGE_ACCOUNT_NAME='ikeaterraformstatefiles'
+    STORAGE_ACCOUNT_KEY='Xpx4Trp6HmZ+ERwkinrYDhVTzw0smmxwFNsFZYJ3rtNKIqdKHPTDaue0NSZLUsYwyXKibKVB1ltOXwPAOWiY3g=='
+    REPO_PATH='tristanmetcalfe-cloudreach/azure-devops-test/Terraform>'
+    BASE_PATH=$(pwd)
+
+    TERRAFORM_STACKS=($(az storage container list --account-name ${STORAGE_ACCOUNT_NAME} --account-key ${STORAGE_ACCOUNT_KEY}))
+
+    for CURRENT_TERRAFORM_STACK in "${arr[@]}" do
+      cd ${REPO_PATH}/${CURRENT_TERRAFORM_STACK}
+
+      STATE_FILE=$(az storage blob list -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" | jq ". | length")
+      STATE_FILE_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate | jq ".exists")
+      STATE_FILE_BACKUP_EXISTS=$(az storage blob exists -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate.backup | jq ".exists")
+
+      # Get Terraform state files
+      if [ "$STATE_FILE_EXISTS" == "false" ]
+        terraform init
+      else
+        az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
+
+        if [ "$STATE_FILE_BACKUP_EXISTS" == "true" ] 
+          az storage blob download -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
+        fi
+      fi
+
+      terraform apply -auto-approve
+
+      # Put new Terraform state files back
+      if $(ls | grep terraform.tfstate)
+        az storage blob upload -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
+      fi
+
+      if $(ls | grep terraform.tfstate.backup)
+        az storage blob upload -c ${CURRENT_CONTAINER_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
+      fi
+      cd ${BASE_PATH}
+    done
+  displayName: 'Get current Terraform state files, apply changes, put back new state files'
