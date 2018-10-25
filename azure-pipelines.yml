@@ -62,7 +62,7 @@ steps:
         fi
       fi
 
-      # terraform apply -auto-approve
+      terraform apply -auto-approve
 
       # Delete old and put new Terraform state files back
       if $(ls | grep terraform.tfstate)
