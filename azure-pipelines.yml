@@ -36,7 +36,7 @@ steps:
 
 - script: |
     ############### VARS ################
-    SECURE_CREDS_FILE=${env:DOWNLOADSECUREFILE_SECUREFILEPATH}
+    SECURE_CREDS_FILE=$(echo ${env:DOWNLOADSECUREFILE_SECUREFILEPATH})
 
     SUBSCRIPTION_ID=$(jq ".subscriptionId" $SECURE_CREDS_FILE -r)
     APPLICATION_ID=$(jq ".applicationId" $SECURE_CREDS_FILE -r)
@@ -49,6 +49,9 @@ steps:
     BASE_PATH=$(pwd)
 
     ##############
+
+    echo "SECURE_CREDS_FILE = ${SECURE_CREDS_FILE}"
+    echo "env:DOWNLOADSECUREFILE_SECUREFILEPATH = ${env:DOWNLOADSECUREFILE_SECUREFILEPATH}"
 
     az login --service-principal --username ${APPLICATION_ID} --password ${PASSWORD} --tenant ${TENANT_ID}
 
