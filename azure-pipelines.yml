@@ -76,7 +76,7 @@ steps:
       # Delete old and put new Terraform state files back
       if ls | grep 'terraform.tfstate';
       then
-        if [ "$STATE_FILE_EXISTS" == "false" ]
+        if [ "$STATE_FILE_EXISTS" == "true" ]
         then
           echo 'Deleting old state file in blob container'
           az storage blob delete -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -n terraform.tfstate
@@ -87,7 +87,7 @@ steps:
 
       if ls | grep 'terraform.tfstate.backup';
       then
-        if [ "$STATE_FILE_BACKUP_EXISTS" == "false" ]
+        if [ "$STATE_FILE_BACKUP_EXISTS" == "true" ]
         then
           echo 'Deleting old state file in blob container'
           az storage blob delete -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -n terraform.tfstate.backup
