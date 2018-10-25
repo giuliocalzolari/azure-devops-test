@@ -74,7 +74,7 @@ steps:
       terraform apply -auto-approve
 
       # Delete old and put new Terraform state files back
-      if $(ls | 'grep terraform.tfstate');
+      if ls | grep 'terraform.tfstate';
       then
         if [ "$STATE_FILE_EXISTS" == "false" ]
         then
@@ -85,7 +85,7 @@ steps:
         az storage blob upload -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
       fi
 
-      if $(ls | grep 'terraform.tfstate.backup');
+      if ls | grep 'terraform.tfstate.backup';
       then
         if [ "$STATE_FILE_BACKUP_EXISTS" == "false" ]
         then
