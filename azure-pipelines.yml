@@ -39,8 +39,6 @@ steps:
     ############### VARS ################
     SECURE_CREDS_FILE=$(echo $(credentials.secureFilePath))
 
-    echo "SECURE_CREDS_FILE = ${SECURE_CREDS_FILE}"
-
     SUBSCRIPTION_ID=$(jq ".subscriptionId" $SECURE_CREDS_FILE -r)
     APPLICATION_ID=$(jq ".applicationId" $SECURE_CREDS_FILE -r)
     TENANT_ID=$(jq ".tenantId" $SECURE_CREDS_FILE -r)
@@ -54,7 +52,6 @@ steps:
     ##############
 
     echo "SECURE_CREDS_FILE = ${SECURE_CREDS_FILE}"
-    echo "env:DOWNLOADSECUREFILE_SECUREFILEPATH = ${env:DOWNLOADSECUREFILE_SECUREFILEPATH}"
 
     az login --service-principal --username ${APPLICATION_ID} --password ${PASSWORD} --tenant ${TENANT_ID}
 
@@ -71,12 +68,12 @@ steps:
       # Get Terraform state files
       if [ "$STATE_FILE_EXISTS" == "true" ]
       then
-        echo 'Terraform state files found for ${CURRENT_TERRAFORM_STACK} - skipping initialisation, and pulling state file'
+        echo "Terraform state files found for ${CURRENT_TERRAFORM_STACK} - skipping initialisation, and pulling state file"
         az storage blob download -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
 
         if [ "$STATE_FILE_BACKUP_EXISTS" == "true" ]
         then
-          echo 'Terraform backup state files found for ${CURRENT_TERRAFORM_STACK} - pulling backup state file'
+          echo "Terraform backup state files found for ${CURRENT_TERRAFORM_STACK} - pulling backup state file"
           az storage blob download -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate.backup
         fi
       fi
