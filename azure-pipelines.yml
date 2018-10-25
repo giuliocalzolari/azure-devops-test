@@ -69,11 +69,7 @@ steps:
       STATE_FILE_BACKUP_EXISTS=$(az storage blob exists -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" --name terraform.tfstate.backup | jq ".exists")
 
       # Get Terraform state files
-      if [ "$STATE_FILE_EXISTS" == "false" ]
-      then
-        echo "Terraform state files NOT found for ${CURRENT_TERRAFORM_STACK} - initialising Terraform"
-        terraform init
-      else
+      if [ "$STATE_FILE_EXISTS" == "true" ]
         echo 'Terraform state files found for ${CURRENT_TERRAFORM_STACK} - skipping initialisation, and pulling state file'
         az storage blob download -c ${CURRENT_TERRAFORM_STACK} --account-name ${STORAGE_ACCOUNT_NAME} --account-key "${STORAGE_ACCOUNT_KEY}" -f terraform.tfstate -n terraform.tfstate
 
