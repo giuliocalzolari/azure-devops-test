@@ -9,6 +9,7 @@ pool:
 steps:
 
 - task: DownloadSecureFile@1
+  name: credentials
   inputs:
     secureFile: credentials.json
 
@@ -36,7 +37,7 @@ steps:
 
 - script: |
     ############### VARS ################
-    SECURE_CREDS_FILE=$(echo ${env:DOWNLOADSECUREFILE_SECUREFILEPATH})
+    SECURE_CREDS_FILE=$(echo $(credentials.secureFilePath))
 
     echo "SECURE_CREDS_FILE = ${SECURE_CREDS_FILE}"
     echo "env:DOWNLOADSECUREFILE_SECUREFILEPATH = ${env:DOWNLOADSECUREFILE_SECUREFILEPATH}"
