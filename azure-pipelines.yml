@@ -36,7 +36,7 @@ steps:
 
 - script: |
     ############### VARS ################
-    SECURE_CREDS_FILE=$env:DOWNLOADSECUREFILE_SECUREFILEPATH
+    SECURE_CREDS_FILE=${env:DOWNLOADSECUREFILE_SECUREFILEPATH}
 
     SUBSCRIPTION_ID=$(jq ".subscriptionId" $SECURE_CREDS_FILE -r)
     APPLICATION_ID=$(jq ".applicationId" $SECURE_CREDS_FILE -r)
