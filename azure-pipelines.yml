@@ -71,7 +71,7 @@ steps:
       # Get Terraform state files
       if [ "$STATE_FILE_EXISTS" == "false" ]
       then
-        echo 'Terraform state files NOT found for ${CURRENT_TERRAFORM_STACK} - initialising Terraform'
+        echo "Terraform state files NOT found for ${CURRENT_TERRAFORM_STACK} - initialising Terraform"
         terraform init
       else
         echo 'Terraform state files found for ${CURRENT_TERRAFORM_STACK} - skipping initialisation, and pulling state file'
@@ -85,10 +85,10 @@ steps:
       fi
 
       terraform apply -auto-approve \
-        -var 'client_id=${APPLICATION_ID}' \
-        -var 'client_secret=${PASSWORD}' \
-        -var 'tenant_id=${TENANT_ID}' \
-        -var 'subscription_id=${SUBSCRIPTION_ID}'
+        -var "client_id=${APPLICATION_ID}" \
+        -var "client_secret=${PASSWORD}" \
+        -var "tenant_id=${TENANT_ID}" \
+        -var "subscription_id=${SUBSCRIPTION_ID}"
 
       # Delete old and put new Terraform state files back
       if ls | grep 'terraform.tfstate';
