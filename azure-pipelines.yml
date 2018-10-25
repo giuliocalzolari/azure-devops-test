@@ -84,6 +84,7 @@ steps:
         fi
       fi
 
+      terraform init
       terraform apply -auto-approve \
         -var "client_id=${APPLICATION_ID}" \
         -var "client_secret=${PASSWORD}" \
