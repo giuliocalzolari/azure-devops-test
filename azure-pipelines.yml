@@ -7,6 +7,11 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 steps:
+
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: credentials.json
+
 - script: |
     apt-get install unzip
     wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
@@ -31,13 +36,15 @@ steps:
 
 - script: |
     ############### VARS ################
-    SUBSCRIPTION_ID='f43108ec-f2eb-4cb0-a6b0-37d635f13dfd'
-    APPLICATION_ID='de4ac66e-82d8-4fbf-9700-21d5ddcdaf1d'
-    TENANT_ID='152e4c75-3657-4284-bb2c-0d825873d72b'
-    PASSWORD='J2/ziq5sxlgWeCTQoqCdXCRfPFxh1wVcGrJSbwmy3vs='
+    SECURE_CREDS_FILE=$env:DOWNLOADSECUREFILE_SECUREFILEPATH
 
-    STORAGE_ACCOUNT_NAME='ikeaterraformstatefiles'
-    STORAGE_ACCOUNT_KEY='Xpx4Trp6HmZ+ERwkinrYDhVTzw0smmxwFNsFZYJ3rtNKIqdKHPTDaue0NSZLUsYwyXKibKVB1ltOXwPAOWiY3g=='
+    SUBSCRIPTION_ID=$(jq ".subscriptionId" $SECURE_CREDS_FILE -r)
+    APPLICATION_ID=$(jq ".applicationId" $SECURE_CREDS_FILE -r)
+    TENANT_ID=$(jq ".tenantId" $SECURE_CREDS_FILE -r)
+    PASSWORD=$(jq ".password" $SECURE_CREDS_FILE -r)
+
+    STORAGE_ACCOUNT_NAME=$(jq ".storageAccountName" $SECURE_CREDS_FILE -r)
+    STORAGE_ACCOUNT_KEY=$(jq ".storageAccountKey" $SECURE_CREDS_FILE -r)
     REPO_PATH='Terraform'
     BASE_PATH=$(pwd)
 
